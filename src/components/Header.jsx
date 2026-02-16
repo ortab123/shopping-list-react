@@ -1,7 +1,7 @@
 export default function Header() {
   return (
     <>
-      <h1> Shopping List🛒</h1>
+      <header> Shopping List🛒</header>
     </>
   );
 }
