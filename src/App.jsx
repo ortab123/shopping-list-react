@@ -11,13 +11,28 @@ function App() {
   function handleAddItems(item) {
     setItemsList((items) => [...items, item]);
   }
+
+  function handleDeleteItem(id) {
+    setItemsList((items) => items.filter((item) => item.id !== id));
+  }
+
+  function handleToggleItem(id) {
+    setItemsList((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item,
+      ),
+    );
+  }
+
   return (
     <>
       <Header />
       <ItemInput onAddItems={handleAddItems} />
-      console.log({itemsList.length})
-      <ShoppingList />
-      <ShoppingItem />
+      <ShoppingList
+        itemsList={itemsList}
+        onDeleteItem={handleDeleteItem}
+        onToggleItem={handleToggleItem}
+      />
     </>
   );
 }
