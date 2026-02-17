@@ -26,7 +26,7 @@ export default function ItemInput({ onAddItems }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button>Add</button>
+        <button type="submit">Add</button>
       </form>
     </>
   );
