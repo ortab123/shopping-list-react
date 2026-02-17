@@ -7,10 +7,15 @@ import ShoppingList from "./components/ShoppingList";
 
 function App() {
   const [itemsList, setItemsList] = useState([]);
+
+  function handleAddItems(item) {
+    setItemsList((items) => [...items, item]);
+  }
   return (
     <>
       <Header />
-      <ItemInput />
+      <ItemInput onAddItems={handleAddItems} />
+      console.log({itemsList.length})
       <ShoppingList />
       <ShoppingItem />
     </>
