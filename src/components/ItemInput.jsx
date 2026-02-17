@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function ItemInput() {
+export default function ItemInput({ onAddItems }) {
   const [name, setName] = useState("");
 
   function handleSubmit(e) {
@@ -8,8 +8,13 @@ export default function ItemInput() {
 
     if (!name) return;
 
-    console.log("Adding item:", name);
+    const newItem = {
+      name,
+      packed: false,
+      id: Date.now(),
+    };
 
+    onAddItems(newItem);
     setName("");
   }
   return (
