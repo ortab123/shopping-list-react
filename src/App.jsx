@@ -25,7 +25,7 @@ function App() {
   }
 
   return (
-    <>
+    <div className="app">
       <Header />
       <ItemInput onAddItems={handleAddItems} />
       <ShoppingList
@@ -33,7 +33,7 @@ function App() {
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
       />
-    </>
+    </div>
   );
 }
 
