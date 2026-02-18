@@ -2,7 +2,6 @@ import { useState } from "react";
 import Header from "./components/Header";
 import "./App.css";
 import ItemInput from "./components/ItemInput";
-import ShoppingItem from "./components/ShoppingItem";
 import ShoppingList from "./components/ShoppingList";
 
 function App() {
@@ -24,6 +23,17 @@ function App() {
     );
   }
 
+  function handleClearList() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your list?",
+    );
+    if (confirmed) setItemsList([]);
+  }
+
+  const numItems = itemsList.length;
+  const numPacked = itemsList.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
   return (
     <div className="app">
       <Header />
@@ -32,7 +42,16 @@ function App() {
         itemsList={itemsList}
         onDeleteItem={handleDeleteItem}
         onToggleItem={handleToggleItem}
+        onClearList={handleClearList}
       />
+
+      <footer className="stats">
+        {numItems === 0
+          ? "start add items to your list!"
+          : percentage === 100
+            ? "You have collect all items in your list🛒🥳"
+            : `You have already collect ${numPacked} items, you have ${numItems - numPacked} more items left on your list (${percentage}%)`}
+      </footer>
     </div>
   );
 }
