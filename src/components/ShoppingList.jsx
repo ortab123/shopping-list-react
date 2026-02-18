@@ -4,6 +4,7 @@ export default function ShoppingList({
   itemsList,
   onDeleteItem,
   onToggleItem,
+  onClearList,
 }) {
   return (
     <div className="list">
@@ -17,6 +18,9 @@ export default function ShoppingList({
           />
         ))}
       </ul>
+      <button className="clear-btn" onClick={onClearList}>
+        Clear list
+      </button>
     </div>
   );
 }
