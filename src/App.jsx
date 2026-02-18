@@ -1,17 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import "./App.css";
 import ItemInput from "./components/ItemInput";
 import ShoppingList from "./components/ShoppingList";
 
-const TEMPLATES = {
-  weekly: ["Milk", "Cheese", "Eggs", "Bread"],
-  party: ["Disposable utensils", "Soft drink", "Snacks", "Beer"],
-  baby: ["Materna", "Wipes", "Diapers"],
-};
-
 function App() {
-  const [itemsList, setItemsList] = useState([]);
+  const [itemsList, setItemsList] = useState(() => {
+    const savedItems = localStorage.getItem("shopping-items");
+    return savedItems ? JSON.parse(savedItems) : [];
+  });
+
+  const [templates, setTemplates] = useState(() => {
+    const savedTemplates = localStorage.getItem("shopping-templates");
+    const defaultTemplates = {
+      weekly: ["Milk", "Cheese", "Eggs", "Bread"],
+      party: ["Disposable utensils", "Soft drink", "Snacks", "Beer"],
+      baby: ["Materna", "Wipes", "Diapers"],
+    };
+    return savedTemplates ? JSON.parse(savedTemplates) : defaultTemplates;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("shopping-items", JSON.stringify(itemsList));
+  }, [itemsList]);
+
+  useEffect(() => {
+    localStorage.setItem("shopping-templates", JSON.stringify(templates));
+  }, [templates]);
 
   function handleAddItems(item) {
     setItemsList((items) => [...items, item]);
@@ -37,13 +52,41 @@ function App() {
   }
 
   function handleLoadTemplate(templateKey) {
-    const newItems = TEMPLATES[templateKey].map((name) => ({
+    const templateItems = templates[templateKey];
+    if (!templateItems) return;
+
+    const newItems = templateItems.map((name) => ({
       id: Date.now() + Math.random(),
       name,
       packed: false,
     }));
 
     setItemsList((prev) => [...prev, ...newItems]);
+  }
+
+  function handleSaveAsTemplate() {
+    if (itemsList.length === 0)
+      return alert("You cannot save an empty list as a template.");
+
+    const templateName = prompt(
+      "Give your new template a name (for example: BBQ, Gym):",
+    );
+    if (!templateName) return;
+
+    const newTemplateItems = itemsList.map((item) => item.name);
+
+    setTemplates((prev) => ({
+      ...prev,
+      [templateName]: newTemplateItems,
+    }));
+  }
+
+  function handleDeleteTemplate(name) {
+    if (window.confirm(`Delete the template "${name}"?`)) {
+      const newTemplates = { ...templates };
+      delete newTemplates[name];
+      setTemplates(newTemplates);
+    }
   }
 
   const numItems = itemsList.length;
@@ -53,13 +96,23 @@ function App() {
   return (
     <div className="app">
       <Header />
-      <div className="templates">
-        <span>Permanent lists:</span>
-        <button onClick={() => handleLoadTemplate("weekly")}>weekly🏡 </button>
-        <button onClick={() => handleLoadTemplate("party")}>
-          Hospitality🥳
+      <div className="templates-container">
+        <div className="templates-list">
+          {Object.keys(templates).map((name) => (
+            <div key={name} className="template-badge">
+              <span onClick={() => handleLoadTemplate(name)}>{name}</span>
+              <button
+                className="delete-temp-btn"
+                onClick={() => handleDeleteTemplate(name)}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+        <button className="save-template-btn" onClick={handleSaveAsTemplate}>
+          📃save current list as a template
         </button>
-        <button onClick={() => handleLoadTemplate("baby")}>baby👶 </button>
       </div>
       <ItemInput onAddItems={handleAddItems} />
       <ShoppingList
