@@ -4,6 +4,12 @@ import "./App.css";
 import ItemInput from "./components/ItemInput";
 import ShoppingList from "./components/ShoppingList";
 
+const TEMPLATES = {
+  weekly: ["Milk", "Cheese", "Eggs", "Bread"],
+  party: ["Disposable utensils", "Soft drink", "Snacks", "Beer"],
+  baby: ["Materna", "Wipes", "Diapers"],
+};
+
 function App() {
   const [itemsList, setItemsList] = useState([]);
 
@@ -30,6 +36,16 @@ function App() {
     if (confirmed) setItemsList([]);
   }
 
+  function handleLoadTemplate(templateKey) {
+    const newItems = TEMPLATES[templateKey].map((name) => ({
+      id: Date.now() + Math.random(),
+      name,
+      packed: false,
+    }));
+
+    setItemsList((prev) => [...prev, ...newItems]);
+  }
+
   const numItems = itemsList.length;
   const numPacked = itemsList.filter((item) => item.packed).length;
   const percentage = Math.round((numPacked / numItems) * 100);
@@ -37,6 +53,14 @@ function App() {
   return (
     <div className="app">
       <Header />
+      <div className="templates">
+        <span>Permanent lists:</span>
+        <button onClick={() => handleLoadTemplate("weekly")}>weekly🏡 </button>
+        <button onClick={() => handleLoadTemplate("party")}>
+          Hospitality🥳
+        </button>
+        <button onClick={() => handleLoadTemplate("baby")}>baby👶 </button>
+      </div>
       <ItemInput onAddItems={handleAddItems} />
       <ShoppingList
         itemsList={itemsList}
